@@ -9,19 +9,20 @@ import BackButton from '../components/BackButton';
 import { theme } from '../core/theme';
 import { emailValidator, passwordValidator } from '../core/utils';
 import { Navigation } from '../types';
+import * as Google from 'expo-google-app-auth';
 
 type Props = {
   navigation: Navigation;
 };
 
-const LoginScreen = ({ navigation }: Props) => {
+const LoginScreen = ({ navigation }: Props,props) => {
   const [email, setEmail] = useState({ value: '', error: '' });
   const [password, setPassword] = useState({ value: '', error: '' });
 
   const _onLoginPressed = () => {
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
-
+  
     if (emailError || passwordError) {
       setEmail({ ...email, error: emailError });
       setPassword({ ...password, error: passwordError });
@@ -30,6 +31,23 @@ const LoginScreen = ({ navigation }: Props) => {
 
     navigation.navigate('Dashboard');
   };
+  async function signInWithGoogleAsync() {
+    try {
+      const result = await Google.logInAsync({
+        androidClientId: "25939865430-5v9k1sr5uo8e9tro3e5pn8h1jsatamlm.apps.googleusercontent.com",
+        scopes: ['profile', 'email'],
+      });
+  
+      if (result.type === 'success') {
+        console.log(result);
+        navigation.navigate('Dashboard');
+      } else {
+        console.log("Cancelled")
+      }
+    } catch (e) {
+      console.log("error",e)
+    }
+  }
 
   return (
     <Background>
@@ -79,6 +97,8 @@ const LoginScreen = ({ navigation }: Props) => {
         <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
           <Text style={styles.link}>Sign up</Text>
         </TouchableOpacity>
+        <Text style={styles.label}>Sign In with google </Text>
+        <Button  onPress = {signInWithGoogleAsync}>Sign in with google</Button>
       </View>
     </Background>
   );
