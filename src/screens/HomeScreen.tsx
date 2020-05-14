@@ -13,10 +13,10 @@ type Props = {
 const HomeScreen = ({ navigation }: Props) => (
   <Background>
     <Logo />
-    <Header>Login Template</Header>
+    <Header>Covidar</Header>
 
     <Paragraph>
-      The easiest way to start with your amazing application.
+      Stay safe by tracing covid-19 spread in a map.
     </Paragraph>
     <Button mode="contained" onPress={() => navigation.navigate('LoginScreen')}>
       Login

@@ -97,8 +97,12 @@ const LoginScreen = ({ navigation }: Props,props) => {
         <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
           <Text style={styles.link}>Sign up</Text>
         </TouchableOpacity>
+        </View>
+        <View style = {styles.row}>
         <Text style={styles.label}>Sign In with google </Text>
-        <Button  onPress = {signInWithGoogleAsync}>Sign in with google</Button>
+        <TouchableOpacity onPress={signInWithGoogleAsync}>
+          <Text style={styles.link}>Sign in with google</Text>
+        </TouchableOpacity>
       </View>
     </Background>
   );

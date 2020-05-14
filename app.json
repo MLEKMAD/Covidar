@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "React Native Paper Login Template",
-    "slug": "react-native-paper-login-template",
+    "name": "Covidar",
+    "slug": "Covidar",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": ["ios", "android", "web"],
@@ -12,6 +12,13 @@
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
+    },
+    "android": {
+      "package": "com.pfa.covidar",
+      "versionCode": 1,
+      "config": {
+        "googleMaps": { "apiKey": "AIzaSyD4Vc2zzg2rvSJcTS4Yfc4fVNxiLfTNPAU" }   
+     }
     },
     "updates": {
       "fallbackToCacheTimeout": 0
