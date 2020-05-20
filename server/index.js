@@ -3,12 +3,22 @@ const fetch = require('node-fetch');
 const redis = require('redis');
 const parser = require('body-parser');
 
+const app = express();
+
 const PORT = process.env.PORT || 5000;
 const REDIS_PORT = process.env.PORT || 6379;
 
 const client = redis.createClient(REDIS_PORT);
 
-const app = express();
+client.on('connect', function() {
+  console.log('Redis client connected');
+});
+
+client.on('error', function (err) {
+  console.log('Something went wrong ' + err);
+});
+
+
 
 function getNearUsers(req, res, next) {
   const { email } = req.params;
@@ -47,8 +57,24 @@ function getNearUsers(req, res, next) {
     }
   );
 }
+function addUser(req, res, next){
+    const {longitude, latitude} = req.params;
+    
+    client.geoadd(
+      'users',
+      longitude,
+      latitude, function(req,result){
+        console.log("user successfully added");
+        res
+        .status(204)
+        .json({success:'User added '});
+      }
+    )
+}
 
-app.get('/:email', getNearUsers);
+
+app.get('/users/:email', getNearUsers);
+app.put('/user/:longtitude/:latitude', addUser);
 
 app.listen(5000, () => {
   console.log(`App listening on port ${PORT}`);
