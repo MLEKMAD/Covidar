@@ -1,18 +1,18 @@
 # Covidar
 
-##Description
+## Description
 Covidar is an app that tracks nearby potential covid patients and warns the user. It also check the likelihood of infection by asking the user questions about symptoms of the covid-19.
-##Installation
-###Frontend
+## Installation
+### Frontend
 ```
 yarn install
 ```
-###Server
+### Server
 ```
 cd server
 yarn install
 ```
-##Usage
+## Usage
 To use the app you should have the expo client installed on your phone.
 run 
 ```
