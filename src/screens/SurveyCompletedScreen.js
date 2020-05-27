@@ -5,6 +5,7 @@ const GREEN = 'rgba(141,196,63,1)';
 const PURPLE = 'rgba(108,48,237,1)';
 const defaultAnswers = { favoriteColor: 'nothing', favoriteNumber: '0', favoritePet: 'nothing' };
 export default class SurveyCompletedScreen extends Component {
+    
     static navigationOptions = () => {
         return {
             headerStyle: {
@@ -28,7 +29,7 @@ export default class SurveyCompletedScreen extends Component {
                 <View style={styles.container}>
                     <ScrollView>
                         <Text style={styles.questionText}>The results are in!</Text>
-                        <Text style={styles.questionText}>Your favorite color: {answers.favoriteColor}</Text>
+                        {/* <Text style={styles.questionText}>Your favorite color: {answers.favoriteColor}</Text>
                         <Text style={styles.questionText}>Your favorite number: {answers.favoriteNumber}</Text>
                         <Text style={styles.questionText}>You said you can juggle {answers.jugglingBalls} balls at once{answers.jugglingBalls > 1 ? '!' : '.'}</Text>
                         <Text style={styles.questionText}>Your favorite pet: {answers.favoritePet.value}</Text>
@@ -36,7 +37,7 @@ export default class SurveyCompletedScreen extends Component {
                         <Text style={styles.questionText}>How you relax: {answers.relax[0].value} and {answers.relax[1].value}</Text>
                         <Text style={styles.questionText}>When confronted with a radio button you picked: {answers.radio.value}</Text>
                         <Text style={styles.questionText}>When given a default you chose: the {answers.singleDefault.value}</Text>
-                        <Text style={styles.questionText}>When given a multiple defaults you chose: the {answers.multipleDefaults[0].value} and the {answers.multipleDefaults[1].value}</Text>
+                        <Text style={styles.questionText}>When given a multiple defaults you chose: the {answers.multipleDefaults[0].value} and the {answers.multipleDefaults[1].value}</Text> */}
                         <Text>Raw JSON: {JSON.stringify(this.props.navigation.getParam('surveyAnswers', {}))}</Text>
                     </ScrollView>
                 </View>

@@ -1,8 +1,15 @@
 import React from 'react';
 import MapView from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
+import mapStyle from '../assets/mapStyle.json'
 
 export default class MapScreen extends React.Component {
   constructor(props) {
@@ -11,99 +18,56 @@ export default class MapScreen extends React.Component {
     this.state = {
       isLoading: false,
       markers: [],
-      location: {
-        "coords":  {
-          "accuracy": 13.616000175476074,
-          "altitude": 503.20001220703125,
-          "heading": 175.94210815429688,
-          "latitude": 31.6460628,
-          "longitude": -7.9843768,
-          "speed": 0.003937204834073782,
-          "latitudeDelta": 0.0922,
-          "longitudeDelta": 0.0421,
-        },
-        "mocked": false,
-        "timestamp": 1589682797843,
+      region: {
+        latitude: 37.78825,
+        longitude: -122.4324,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
       },
-      ErrorMsg:""
+      ErrorMsg: '',
     };
   }
-  
-  getLocation = () => {
+
+  getCurrentLocation = () => {
     (async () => {
       let markers = [];
       let { status } = await Permissions.askAsync(Permissions.LOCATION);
       if (status !== 'granted') {
-        this.setState({ErrorMsg:'Permission to access location was denied'});
+        this.setState({ ErrorMsg: 'Permission to access location was denied' });
       }
-    
-      console.log("hfe");
-      let location = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.High});
-      console.log("location:",location.coords)
-        this.setState({ 
-         
-          location:location
-        });
-        console.log("location in state:",this.state.location.coords);
 
+      console.log('hfe');
+      let location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+      let region = { ...this.state.region };
+      region.latitude = location.coords.latitude;
+      region.longitude = location.coords.longitude;
+      region.latitudeDelta = 0.01;
+      region.longitudeDelta = 0.01;
+
+      this.setState({ region });
     })();
-  }
-  componentWillMount(){
+  };
+  
+  componentdidMount() {
     this.getLocation;
   }
 
- /* findCoordines = async ()=> {
-    const {status} = await Permissions.askAsync(Permissions.LOCATION);
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        
-        this.setState({location : position});
-        console.log("you're here"+this.state.location);
-
-      },
-      error => Alert.alert(error.message),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    );
-  };
-  componentWillMount(){
-    this.findCoordines();
-    console.log("mounted here ;)"+this.state.location);
-  }
-  */
-
-
-  
  
   render() {
     return (
       <View style={styles.container}>
-      <MapView
-    style={styles.mapStyle}
-    region={
-     this.state.location.coords
-    }
->
-        {this.state.isLoading ? null : this.state.markers.map((marker, index) => {
-     const coords = {
-         latitude: marker.latitude,
-         longitude: marker.longitude,
-     };
+        <MapView
+          style={styles.mapStyle}
+          customMapStyle={mapStyle}
+          region={this.state.region}
+          showsUserLocation = {true}
+        >
+          
+        </MapView>
 
-     const metadata = `Status: ${marker.statusValue}`;
-
-     return (
-         <MapView.Marker
-            key={index}
-            coordinate={this.state.location.coords}
-            title={marker.stationName}
-            description={metadata}
-         />
-     );
-  })}
-</MapView>
-     
-      
-        <TouchableOpacity onPress={this.getLocation}>
+        <TouchableOpacity onPress={this.getCurrentLocation}>
           <Text style={styles.link}>Current Location</Text>
         </TouchableOpacity>
       </View>

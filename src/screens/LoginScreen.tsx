@@ -16,21 +16,21 @@ type Props = {
 };
 
 const LoginScreen = ({ navigation }: Props,props) => {
-  const [email, setEmail] = useState({ value: '', error: '' });
-  const [password, setPassword] = useState({ value: '', error: '' });
+//   const [email, setEmail] = useState({ value: '', error: '' });
+//   const [password, setPassword] = useState({ value: '', error: '' });
 
-  const _onLoginPressed = () => {
-    const emailError = emailValidator(email.value);
-    const passwordError = passwordValidator(password.value);
+//   const _onLoginPressed = () => {
+//     const emailError = emailValidator(email.value);
+//     const passwordError = passwordValidator(password.value);
   
-    if (emailError || passwordError) {
-      setEmail({ ...email, error: emailError });
-      setPassword({ ...password, error: passwordError });
-      return;
-    }
+//     if (emailError || passwordError) {
+//       setEmail({ ...email, error: emailError });
+//       setPassword({ ...password, error: passwordError });
+//       return;
+//     }
 
-    navigation.navigate('Dashboard');
-  };
+//     navigation.navigate('Dashboard');
+//   };
   async function signInWithGoogleAsync() {
     try {
       const result = await Google.logInAsync({
@@ -55,9 +55,9 @@ const LoginScreen = ({ navigation }: Props,props) => {
 
       <Logo />
 
-      <Header>Welcome back.</Header>
+      <Header>Welcome.</Header>
 
-      <TextInput
+      {/* <TextInput
         label="Email"
         returnKeyType="next"
         value={email.value}
@@ -97,12 +97,15 @@ const LoginScreen = ({ navigation }: Props,props) => {
         <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
           <Text style={styles.link}>Sign up</Text>
         </TouchableOpacity>
-        </View>
+        </View> */}
         <View style = {styles.row}>
-        <Text style={styles.label}>Sign In with google </Text>
+        {/* <Text style={styles.label}>Sign In with google </Text>
         <TouchableOpacity onPress={signInWithGoogleAsync}>
           <Text style={styles.link}>Sign in with google</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Button mode="contained" onPress={signInWithGoogleAsync}>
+        Sign In with Google
+      </Button>
       </View>
     </Background>
   );

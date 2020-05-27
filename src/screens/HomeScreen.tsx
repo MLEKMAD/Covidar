@@ -19,14 +19,15 @@ const HomeScreen = ({ navigation }: Props) => (
       Stay safe by tracing covid-19 spread in a map.
     </Paragraph>
     <Button mode="contained" onPress={() => navigation.navigate('LoginScreen')}>
-      Login
+      {/* Login */}
+      Join The community
     </Button>
-    <Button
+    {/* <Button
       mode="outlined"
       onPress={() => navigation.navigate('RegisterScreen')}
     >
       Sign Up
-    </Button>
+    </Button> */}
   </Background>
 );
 
