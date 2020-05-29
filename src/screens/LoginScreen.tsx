@@ -10,6 +10,8 @@ import { theme } from '../core/theme';
 import { emailValidator, passwordValidator } from '../core/utils';
 import { Navigation } from '../types';
 import * as Google from 'expo-google-app-auth';
+import AsyncStorage from '@react-native-community/async-storage';
+
 
 type Props = {
   navigation: Navigation;
@@ -31,6 +33,17 @@ const LoginScreen = ({ navigation }: Props,props) => {
 
 //     navigation.navigate('Dashboard');
 //   };
+
+const saveUserId = async (userId) => {
+  try {
+    await AsyncStorage.setItem('userId', userId);
+    console.log("success !!!");
+  } catch (error) {
+    // Error retrieving data
+    console.log(error.message);
+  }
+};
+
   async function signInWithGoogleAsync() {
     try {
       const result = await Google.logInAsync({
@@ -40,6 +53,7 @@ const LoginScreen = ({ navigation }: Props,props) => {
   
       if (result.type === 'success') {
         console.log(result);
+        saveUserId(result.user.email);
         navigation.navigate('Dashboard');
       } else {
         console.log("Cancelled")
@@ -48,6 +62,7 @@ const LoginScreen = ({ navigation }: Props,props) => {
       console.log("error",e)
     }
   }
+
 
   return (
     <Background>

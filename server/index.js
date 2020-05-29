@@ -76,6 +76,7 @@ function addUser(req, res, next){
 app.get('/users/:email', getNearUsers);
 app.put('/user/:longtitude/:latitude', addUser);
 
+
 app.listen(5000, () => {
   console.log(`App listening on port ${PORT}`);
 });
