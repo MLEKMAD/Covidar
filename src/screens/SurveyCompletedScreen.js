@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
-import { AsyncStorage,ScrollView, StyleSheet, Text, View,Button } from 'react-native';
-import axios from 'axios'
+import {
+  AsyncStorage,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Button,
+} from 'react-native';
+import axios from 'axios';
+const stringifyObject = require('stringify-object');
 const GREEN = 'rgba(141,196,63,1)';
 const PURPLE = 'rgba(108,48,237,1)';
 const defaultAnswers = {
@@ -30,46 +38,47 @@ export default class SurveyCompletedScreen extends Component {
       },
     };
   };
-  
+
   async retrieveItem(key) {
     try {
-      const retrievedItem =  await AsyncStorage.getItem(key);
-      console.log("item",retrievedItem)
-      this.setState({userId: retrievedItem})
+      const retrievedItem = await AsyncStorage.getItem(key);
+      console.log('item', retrievedItem);
+      this.setState({ userId: retrievedItem });
     } catch (error) {
       console.log(error.message);
     }
-    return
+    return;
   }
 
-  putAnswers = async (userId,answers) => {
-      let postedAnswers = {userId,answers};
-      await axios.put("http://localhost:5000/answers/",postedAnswers).then(res => {
-          console.log(res.status);
-      })
-  }
+  putAnswers = async (userId, answers) => {
+    let postedAnswers = { userId:userId, answers:answers };
+    let ann = stringifyObject(postedAnswers, {
+      indent: '  ',
+      singleQuotes: false,
+    });
+    console.log("ann",ann)
+    fetch('http://192.168.1.106:5000/answers', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: ann,
+    })
+    .then((response) => response.json())
+   .done();
+        this.props.navigation.navigate("HomeScreen")
+    };
+  
 
-//     fetchAnswers = async (userId, answers) => {
-//     let postedAnswers = {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         Accept: 'application/json',
-//       },
-//       body: JSON.stringify({ userId:userId, answers }),
-//     };
+  componentDidMount() {
+    this.retrieveItem('userId');
    
-//     await fetch("http://localhost:5000/answers/", postedAnswers).then((res)=>{
-//        console.log("Post successfully")
-//     });
-//     console.log("fetched successfully");
-//   };
-
- componentDidMount(){ this.retrieveItem("userId")}
+  }
 
   render() {
     let userId = this.state.userId;
-    console.log("userId", userId);
+    console.log('userId', userId);
     const answers = this.props.navigation.getParam(
       'surveyAnswers',
       defaultAnswers
@@ -93,16 +102,14 @@ export default class SurveyCompletedScreen extends Component {
               {JSON.stringify(
                 this.props.navigation.getParam('surveyAnswers', {})
               )}
-              
             </Text>
             <Button
-                    title={'Submit'}
-                    onPress={this.putAnswers(userId,answers)}
-                    color={GREEN}
-                />
-                     
+              onPress={() => {
+                this.putAnswers(userId, answers);
+              }}
+              title={'Submit'}
+            />
           </ScrollView>
-         
         </View>
       </View>
     );

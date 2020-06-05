@@ -1,0 +1,37 @@
+{
+    "userId": "",
+    "answers": {
+        "Sore Throat": {
+            "optionText": "YES",
+            "value": 1
+        },
+        "Stuffy or runny nose": {
+            "optionText": "NO",
+            "value": 0
+        },
+        "Eye Pain": {
+            "optionText": "YES",
+            "value": 1
+        },
+        "Nausea": {
+            "optionText": "NO",
+            "value": 0
+        },
+        "Chest pain": {
+            "optionText": "NO",
+            "value": 0
+        },
+        "Aches or muscle pain": {
+            "optionText": "NO",
+            "value": 0
+        },
+        "Fever": {
+            "optionText": "YES",
+            "value": 1
+        },
+        "Cough": {
+            "optionText": "NO",
+            "value": 0
+        }
+    }
+}

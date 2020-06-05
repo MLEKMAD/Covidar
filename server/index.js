@@ -2,7 +2,6 @@ const express = require('express');
 const fetch = require('node-fetch');
 const redis = require('redis');
 const parser = require('body-parser');
-
 const app = express();
 
 const PORT = process.env.PORT || 5000;
@@ -18,23 +17,28 @@ client.on('error', function (err) {
   console.log('Something went wrong ' + err);
 });
 
+app.use(parser.json());
 
 
-function getNearUsers(req, res, next) {
-  const { email } = req.params;
-
+function getLocation(email){
   client.geopos('va-universities', email, function(err, result) {
     app.locals.location = result;
-  });
-
-  //    console.log('location',app.locals.location);
-
-  client.georadius(
-    'users',
+    
+    });
+}
+function getNearUsers(req, res, next) {
+  const { email } = req.params;
+  console.log(email)
+  
+  getLocation(email);
+   
+  console.log('location',app.locals.location);
+   client.georadius(
+    'va-universities',
     app.locals.location[0][0],
     app.locals.location[0][1],
-    '4',
-    'km',
+    '100',
+    'mi',
     'WITHCOORD',
     'WITHDIST',
     'ASC',
@@ -75,6 +79,9 @@ function addUser(req, res, next){
 
 app.get('/users/:email', getNearUsers);
 app.put('/user/:longtitude/:latitude', addUser);
+app.post('/answers/',(req,res) => {
+  console.log("body",res.body)
+})
 
 
 app.listen(5000, () => {
