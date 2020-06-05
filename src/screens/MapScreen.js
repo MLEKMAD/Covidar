@@ -1,6 +1,7 @@
 import React from 'react';
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import {
+  AsyncStorage,
   StyleSheet,
   Text,
   View,
@@ -9,7 +10,7 @@ import {
 } from 'react-native';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import mapStyle from '../assets/mapStyle.json'
+import mapStyle from '../assets/mapStyle.json';
 
 export default class MapScreen extends React.Component {
   constructor(props) {
@@ -25,7 +26,20 @@ export default class MapScreen extends React.Component {
         longitudeDelta: 0.0421,
       },
       ErrorMsg: '',
+      userId: '',
     };
+  }
+
+  async retrieveItem(key) {
+    console.log('entered');
+    try {
+      const retrievedItem = await AsyncStorage.getItem(key);
+      console.log('item', retrievedItem);
+      this.setState({ userId: retrievedItem });
+    } catch (error) {
+      console.log(error.message);
+    }
+    return;
   }
 
   getCurrentLocation = () => {
@@ -49,22 +63,28 @@ export default class MapScreen extends React.Component {
       this.setState({ region });
     })();
   };
-  
-  componentdidMount() {
-    this.getLocation;
+
+  componentWillMount() {
+    // this.getLocation;
+    this.retrieveItem('userId');
   }
 
- 
   render() {
+    let userId = this.state.userId;
+    console.log('email', userId);
     return (
       <View style={styles.container}>
         <MapView
           style={styles.mapStyle}
           customMapStyle={mapStyle}
           region={this.state.region}
-          showsUserLocation = {true}
+          showsUserLocation={true}
         >
-          
+          <Marker
+            coordinate={this.state.region}
+            title="title"
+            description={this.state.userId}
+          />
         </MapView>
 
         <TouchableOpacity onPress={this.getCurrentLocation}>
