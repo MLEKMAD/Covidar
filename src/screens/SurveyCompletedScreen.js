@@ -7,7 +7,7 @@ import {
   View,
   Button,
 } from 'react-native';
-import axios from 'axios';
+import ApiService from '../utils/Api';
 const stringifyObject = require('stringify-object');
 const GREEN = 'rgba(141,196,63,1)';
 const PURPLE = 'rgba(108,48,237,1)';
@@ -51,29 +51,20 @@ export default class SurveyCompletedScreen extends Component {
   }
 
   putAnswers = async (userId, answers) => {
-    let postedAnswers = { userId:userId, answers:answers };
+    const myApi = new ApiService();
+    let postedAnswers = { userId: userId, answers: answers };
     let ann = stringifyObject(postedAnswers, {
       indent: '  ',
       singleQuotes: false,
     });
-    console.log("ann",ann)
-    fetch('http://192.168.1.106:5000/answers', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: ann,
-    })
-    .then((response) => response.json())
-   .done();
-        this.props.navigation.navigate("HomeScreen")
-    };
-  
+    console.log('user', JSON.stringify(userId));
+    myApi
+      .post('/answers', JSON.stringify(postedAnswers,null,2))
+      .catch(err => console.log(err));
+  };
 
   componentDidMount() {
     this.retrieveItem('userId');
-   
   }
 
   render() {
