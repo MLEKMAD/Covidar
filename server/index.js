@@ -1,7 +1,7 @@
 const express = require('express');
 const fetch = require('node-fetch');
 const redis = require('redis');
-const parser = require('body-parser');
+const bodyParser = require('body-parser');
 const app = express();
 
 const PORT = process.env.PORT || 5000;
@@ -17,7 +17,12 @@ client.on('error', function (err) {
   console.log('Something went wrong ' + err);
 });
 
-app.use(parser.json());
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
+
 
 
 function getLocation(email){
@@ -80,7 +85,7 @@ function addUser(req, res, next){
 app.get('/users/:email', getNearUsers);
 app.put('/user/:longtitude/:latitude', addUser);
 app.post('/answers/',(req,res) => {
-  console.log("body",res.body)
+  console.log("body",req.body)
 })
 
 

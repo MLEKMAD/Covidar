@@ -11,6 +11,7 @@ import {
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import mapStyle from '../assets/mapStyle.json';
+import ApiService from '../utils/Api';
 
 export default class MapScreen extends React.Component {
   constructor(props) {
@@ -26,15 +27,25 @@ export default class MapScreen extends React.Component {
         longitudeDelta: 0.0421,
       },
       ErrorMsg: '',
-      userId: '',
+      userId: "",
     };
   }
+  
+  loadMarkers = async () => {
+        console.log("here");
+        const myApi = new ApiService();
+        console.log("1",this.state.userId)
+        let markers = await myApi.get(`/users/${this.state.userId}`);
+        this.setState({markers,isLoading:true})
+        console.log('markers',markers)
+
+        }
+
 
   async retrieveItem(key) {
     console.log('entered');
     try {
       const retrievedItem = await AsyncStorage.getItem(key);
-      console.log('item', retrievedItem);
       this.setState({ userId: retrievedItem });
     } catch (error) {
       console.log(error.message);
@@ -44,7 +55,6 @@ export default class MapScreen extends React.Component {
 
   getCurrentLocation = () => {
     (async () => {
-      let markers = [];
       let { status } = await Permissions.askAsync(Permissions.LOCATION);
       if (status !== 'granted') {
         this.setState({ ErrorMsg: 'Permission to access location was denied' });
@@ -64,14 +74,27 @@ export default class MapScreen extends React.Component {
     })();
   };
 
+  mapMarkers = () => {
+    return this.state.markers.map((marker) => <Marker
+    key={marker.key}
+      coordinate={{ latitude: parseInt(marker.latitude), longitude: parseInt(marker.longitude) }}
+      title="marker"
+      description="markkkkeer"
+    >
+    </Marker >)
+  }
+
   componentWillMount() {
     // this.getLocation;
-    this.retrieveItem('userId');
+    
+    this.retrieveItem('userId')
   }
 
   render() {
     let userId = this.state.userId;
+    let isLoading = this.state.isLoading;
     console.log('email', userId);
+    let email = String(userId);
     return (
       <View style={styles.container}>
         <MapView
@@ -83,12 +106,17 @@ export default class MapScreen extends React.Component {
           <Marker
             coordinate={this.state.region}
             title="title"
-            description={this.state.userId}
+            description={email}
           />
+          {isLoading?this.mapMarkers():null}
         </MapView>
 
         <TouchableOpacity onPress={this.getCurrentLocation}>
           <Text style={styles.link}>Current Location</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={this.loadMarkers}>
+          <Text style={styles.link}>people arround me</Text>
         </TouchableOpacity>
       </View>
     );
