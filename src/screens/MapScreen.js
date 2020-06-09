@@ -12,6 +12,7 @@ import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import mapStyle from '../assets/mapStyle.json';
 import ApiService from '../utils/Api';
+const API_ROOT = 'http://127.0.0.1:5000/';
 
 export default class MapScreen extends React.Component {
   constructor(props) {
@@ -28,12 +29,13 @@ export default class MapScreen extends React.Component {
       },
       ErrorMsg: '',
       userId: "",
+      userName:""
     };
   }
   
   loadMarkers = async () => {
         console.log("here");
-        const myApi = new ApiService();
+        const myApi = new ApiService(API_ROOT);
         console.log("1",this.state.userId)
         let markers = await myApi.get(`/users/${this.state.userId}`);
         this.setState({markers,isLoading:true})
@@ -46,7 +48,7 @@ export default class MapScreen extends React.Component {
     console.log('entered');
     try {
       const retrievedItem = await AsyncStorage.getItem(key);
-      this.setState({ userId: retrievedItem });
+     key.localeCompare("userId")? this.setState({ userName: retrievedItem }):this.setState({ userId: retrievedItem })
     } catch (error) {
       console.log(error.message);
     }
@@ -88,13 +90,17 @@ export default class MapScreen extends React.Component {
     // this.getLocation;
     
     this.retrieveItem('userId')
+    this.retrieveItem('name')
+
   }
 
   render() {
     let userId = this.state.userId;
+    let userName = this.state.userName;
     let isLoading = this.state.isLoading;
-    console.log('email', userId);
-    let email = String(userId);
+    console.log('id', userId);
+    let id = String(userId);
+    let name = String(userName);
     return (
       <View style={styles.container}>
         <MapView
@@ -106,7 +112,7 @@ export default class MapScreen extends React.Component {
           <Marker
             coordinate={this.state.region}
             title="title"
-            description={email}
+            description={name}
           />
           {isLoading?this.mapMarkers():null}
         </MapView>

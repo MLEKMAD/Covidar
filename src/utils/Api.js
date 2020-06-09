@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-const API_ROOT = 'http://127.0.0.1:5000/';
 const TIMEOUT = 60000;
 const HEADERS = {
     'Content-Type': 'application/json',
@@ -9,11 +8,11 @@ const HEADERS = {
 
 class ApiService {
 
-    constructor( baseURL = API_ROOT, timeout = TIMEOUT, headers = HEADERS ) {
+    constructor( baseURL = API_ROOT) {
         const client = axios.create({
             baseURL,
-            timeout,
-            headers
+            TIMEOUT,
+            HEADERS
         });
 
         client.interceptors.response.use(this.handleSuccess, this.handleError);
