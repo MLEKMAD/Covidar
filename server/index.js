@@ -76,6 +76,10 @@ function addUser(req, res, next){
     )
 }
 
+function CalculateState(req, res, next) {
+  const { answers } = req.params;
+  console.log(answers)
+}
 
 app.get('/users/:email', getNearUsers);
 app.put('/user/:longtitude/:latitude', addUser);
