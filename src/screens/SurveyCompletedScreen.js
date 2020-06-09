@@ -16,6 +16,7 @@ const defaultAnswers = {
   favoriteNumber: '0',
   favoritePet: 'nothing',
 };
+const API_ROOT = 'http://127.0.0.1:5000/';
 export default class SurveyCompletedScreen extends Component {
   constructor(props) {
     super(props);
@@ -51,7 +52,7 @@ export default class SurveyCompletedScreen extends Component {
   }
 
   putAnswers = async (userId, answers) => {
-    const myApi = new ApiService();
+    const myApi = new ApiService(API_ROOT);
     let postedAnswers = { userId: userId, answers: answers };
     let ann = stringifyObject(postedAnswers, {
       indent: '  ',
@@ -59,7 +60,7 @@ export default class SurveyCompletedScreen extends Component {
     });
     console.log('user', JSON.stringify(userId));
     myApi
-      .post('/answers', JSON.stringify(postedAnswers,null,2))
+      .post('/answers', JSON.stringify(postedAnswers))
       .catch(err => console.log(err));
   };
 

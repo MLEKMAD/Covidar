@@ -6,3 +6,4 @@ export { default as Dashboard } from './Dashboard';
 export { default as SurveyScreen } from './SurveyScreen';
 export { default as SurveyCompletedScreen } from './SurveyCompletedScreen';
 export { default as MapScreen} from './MapScreen'
+export { default as Statistics} from './Statistics'

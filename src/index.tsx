@@ -9,7 +9,8 @@ import {
   Dashboard,
   SurveyScreen,
   SurveyCompletedScreen,
-  MapScreen
+  MapScreen,
+  Statistics,
 } from './screens';
 
 const Router = createStackNavigator(
@@ -22,7 +23,7 @@ const Router = createStackNavigator(
     MapScreen,
     SurveyScreen,
     SurveyCompletedScreen,
-    
+    Statistics,
   },
   {
     initialRouteName: 'HomeScreen',

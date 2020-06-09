@@ -13,16 +13,15 @@ type Props = {
 const Dashboard = ({ navigation }: Props) => (
   <Background>
     <Logo />
-    <Header>Let’s start</Header>
-    <Paragraph>
-      Your amazing app starts here. Open you favourite code editor and start
-      editing this project.
-    </Paragraph>
+    <Header>Covidar</Header>
     <Button mode="outlined" onPress={() => navigation.navigate('SurveyScreen')}>
       Take Infection test
     </Button>
     <Button mode="outlined" onPress={() => navigation.navigate('MapScreen')}>
       Check infection map
+    </Button>
+    <Button mode="outlined" onPress={() => navigation.navigate('Statistics')}>
+      Statistics
     </Button>
   </Background>
 );
