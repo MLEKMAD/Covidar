@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import { AsyncStorage,TouchableOpacity, StyleSheet, Text, View } from 'react-native';
+import { AsyncStorage,TouchableOpacity, StyleSheet, Text, View, Alert } from 'react-native';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
 import Header from '../components/Header';
@@ -10,9 +10,7 @@ import { theme } from '../core/theme';
 import { emailValidator, passwordValidator } from '../core/utils';
 import { Navigation } from '../types';
 import * as Google from 'expo-google-app-auth';
-// import AsyncStorage from '@react-native-community/async-storage';
-
-
+import * as Facebook from 'expo-facebook';
 type Props = {
   navigation: Navigation;
 };
@@ -34,9 +32,11 @@ const LoginScreen = ({ navigation }: Props,props) => {
 //     navigation.navigate('Dashboard');
 //   };
 
-const saveUserId = async (userId) => {
+const saveUser = async (userId,name) => {
   try {
     await AsyncStorage.setItem('userId', userId);
+    await AsyncStorage.setItem('name', name);
+
     console.log("success !!!");
   } catch (error) {
     // Error retrieving data
@@ -53,7 +53,7 @@ const saveUserId = async (userId) => {
   
       if (result.type === 'success') {
         console.log(result);
-        saveUserId(result.user.email);
+        saveUser(result.user.id,result.user.name);
         navigation.navigate('Dashboard');
       } else {
         console.log("Cancelled")
@@ -63,6 +63,44 @@ const saveUserId = async (userId) => {
     }
   }
 
+  async function handleFacebookLogin(){
+    try {
+      const { type, token } = await Facebook.logInWithReadPermissionsAsync(
+        '1201211719949057', // Replace with your own app id in standalone app
+        { permissions: ['public_profile'] }
+      );
+
+      switch (type) {
+        case 'success': {
+          // Get the user's name using Facebook's Graph API
+          const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
+          const profile = await response.json();
+          console.log("profile",profile)
+          saveUser(profile.id,profile.name);
+          navigation.navigate('Dashboard');
+          break;
+        }
+        case 'cancel': {
+          Alert.alert(
+            'Cancelled!',
+            'Login was cancelled!',
+          );
+          break;
+        }
+        default: {
+          Alert.alert(
+            'Oops!',
+            'Login failed!',
+          );
+        }
+      }
+    } catch (e) {
+      Alert.alert(
+        'Oops!',
+        'Login failed!',
+      );
+    }
+  };
 
   return (
     <Background>
@@ -72,54 +110,14 @@ const saveUserId = async (userId) => {
 
       <Header>Welcome.</Header>
 
-      {/* <TextInput
-        label="Email"
-        returnKeyType="next"
-        value={email.value}
-        onChangeText={text => setEmail({ value: text, error: '' })}
-        error={!!email.error}
-        errorText={email.error}
-        autoCapitalize="none"
-        autoCompleteType="email"
-        textContentType="emailAddress"
-        keyboardType="email-address"
-      />
-
-      <TextInput
-        label="Password"
-        returnKeyType="done"
-        value={password.value}
-        onChangeText={text => setPassword({ value: text, error: '' })}
-        error={!!password.error}
-        errorText={password.error}
-        secureTextEntry
-      />
-
-      <View style={styles.forgotPassword}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('ForgotPasswordScreen')}
-        >
-          <Text style={styles.label}>Forgot your password?</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Button mode="contained" onPress={_onLoginPressed}>
-        Login
-      </Button>
-
-      <View style={styles.row}>
-        <Text style={styles.label}>Don’t have an account? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
-          <Text style={styles.link}>Sign up</Text>
-        </TouchableOpacity>
-        </View> */}
+     
         <View style = {styles.row}>
-        {/* <Text style={styles.label}>Sign In with google </Text>
-        <TouchableOpacity onPress={signInWithGoogleAsync}>
-          <Text style={styles.link}>Sign in with google</Text>
-        </TouchableOpacity> */}
+
         <Button mode="contained" onPress={signInWithGoogleAsync}>
         Sign In with Google
+      </Button>
+      <Button mode="contained" onPress={handleFacebookLogin}>
+        Sign In with Facebook
       </Button>
       </View>
     </Background>
