@@ -1,5 +1,4 @@
 const express = require('express');
-const fetch = require('node-fetch');
 const redis = require('redis');
 const bodyParser = require('body-parser');
 const app = express();
@@ -25,46 +24,44 @@ app.use(bodyParser.json())
 
 
 
-function getLocation(email){
-  client.geopos('va-universities', email, function(err, result) {
-    app.locals.location = result;
-    
-    });
-}
-function getNearUsers(req, res, next) {
-  const { email } = req.params;
-  console.log(email)
+ function getNearUsers(req, res, next) {
+  const { id } = req.params;
+ 
+  client.geopos('va-universities', id, function(err, result) {
   
-  getLocation(email);
-   
-  console.log('location',app.locals.location);
-   client.georadius(
-    'va-universities',
-    app.locals.location[0][0],
-    app.locals.location[0][1],
-    '100',
-    'mi',
-    'WITHCOORD',
-    'WITHDIST',
-    'ASC',
-    function(err, results) {
-      if (err) {
-        next(err);
-      } else {
-        results = results.map(function(aResult) {
-          resultObject = {
-            key: aResult[0],
-            distance: aResult[1],
-            longitude: aResult[2][0],
-            latitude: aResult[2][1],
-          };
-          return resultObject;
-        });
-
-        res.send(results);
+    app.locals.location = result;
+    client.georadius(
+      'va-universities',
+      app.locals.location[0][0],
+      app.locals.location[0][1],
+      '100',
+      'mi',
+      'WITHCOORD',
+      'WITHDIST',
+      'ASC',
+      function(err, results) {
+        if (err) {
+        
+  
+          next(err);
+          
+        } else {
+          results = results.map(function(aResult) {
+            resultObject = {
+              key: aResult[0],
+              distance: aResult[1],
+              longitude: aResult[2][0],
+              latitude: aResult[2][1],
+            };
+            return resultObject;
+          });
+    
+          res.send(results);
+        }
       }
-    }
-  );
+    );
+    });
+  
 }
 function addUser(req, res, next){
     const {longitude, latitude} = req.params;
@@ -82,7 +79,7 @@ function addUser(req, res, next){
 }
 
 
-app.get('/users/:email', getNearUsers);
+app.get('/users/:id', getNearUsers);
 app.put('/user/:longtitude/:latitude', addUser);
 app.post('/answers/',(req,res) => {
   console.log("body",req.body)
