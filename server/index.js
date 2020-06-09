@@ -1,7 +1,6 @@
 const express = require('express');
-const fetch = require('node-fetch');
 const redis = require('redis');
-const parser = require('body-parser');
+const bodyParser = require('body-parser');
 const app = express();
 
 const PORT = process.env.PORT || 5000;
@@ -17,49 +16,52 @@ client.on('error', function (err) {
   console.log('Something went wrong ' + err);
 });
 
-app.use(parser.json());
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
 
 
-function getLocation(email){
-  client.geopos('va-universities', email, function(err, result) {
-    app.locals.location = result;
-    
-    });
-}
-function getNearUsers(req, res, next) {
-  const { email } = req.params;
-  console.log(email)
+
+ function getNearUsers(req, res, next) {
+  const { id } = req.params;
+ 
+  client.geopos('va-universities', id, function(err, result) {
   
-  getLocation(email);
-   
-  console.log('location',app.locals.location);
-   client.georadius(
-    'va-universities',
-    app.locals.location[0][0],
-    app.locals.location[0][1],
-    '100',
-    'mi',
-    'WITHCOORD',
-    'WITHDIST',
-    'ASC',
-    function(err, results) {
-      if (err) {
-        next(err);
-      } else {
-        results = results.map(function(aResult) {
-          resultObject = {
-            key: aResult[0],
-            distance: aResult[1],
-            longitude: aResult[2][0],
-            latitude: aResult[2][1],
-          };
-          return resultObject;
-        });
-
-        res.send(results);
+    app.locals.location = result;
+    client.georadius(
+      'va-universities',
+      app.locals.location[0][0],
+      app.locals.location[0][1],
+      '100',
+      'mi',
+      'WITHCOORD',
+      'WITHDIST',
+      'ASC',
+      function(err, results) {
+        if (err) {
+        
+  
+          next(err);
+          
+        } else {
+          results = results.map(function(aResult) {
+            resultObject = {
+              key: aResult[0],
+              distance: aResult[1],
+              longitude: aResult[2][0],
+              latitude: aResult[2][1],
+            };
+            return resultObject;
+          });
+    
+          res.send(results);
+        }
       }
-    }
-  );
+    );
+    });
+  
 }
 function addUser(req, res, next){
     const {longitude, latitude} = req.params;
@@ -81,10 +83,10 @@ function CalculateState(req, res, next) {
   console.log(answers)
 }
 
-app.get('/users/:email', getNearUsers);
+app.get('/users/:id', getNearUsers);
 app.put('/user/:longtitude/:latitude', addUser);
 app.post('/answers/',(req,res) => {
-  console.log("body",res.body)
+  console.log("body",req.body)
 })
 
 
