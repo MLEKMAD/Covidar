@@ -27,11 +27,11 @@ app.use(bodyParser.json())
  function getNearUsers(req, res, next) {
   const { id } = req.params;
  
-  client.geopos('va-universities', id, function(err, result) {
+  client.geopos('users', id, function(err, result) {
   
     app.locals.location = result;
     client.georadius(
-      'va-universities',
+      'users',
       app.locals.location[0][0],
       app.locals.location[0][1],
       '100',
@@ -64,23 +64,26 @@ app.use(bodyParser.json())
   
 }
 function addUser(req, res, next){
-    const {longitude, latitude} = req.params;
+    const {longitude, latitude, member} = req.params;
     
     client.geoadd(
       'users',
       longitude,
-      latitude, function(req,result){
+      latitude,
+      member, function(requ,result){
         console.log("user successfully added");
+        
         res
         .status(204)
         .json({success:'User added '});
       }
     )
+    
 }
 
 
 app.get('/users/:id', getNearUsers);
-app.put('/user/:longtitude/:latitude', addUser);
+app.put('/user/:longitude/:latitude/:member', addUser);
 app.post('/answers/',(req,res) => {
   console.log("body",req.body)
 })
