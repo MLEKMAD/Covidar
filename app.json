@@ -4,26 +4,34 @@
     "slug": "Covidar",
     "privacy": "public",
     "sdkVersion": "35.0.0",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "android": {
       "package": "com.pfa.covidar",
       "versionCode": 1,
       "config": {
-        "googleMaps": { "apiKey": "AIzaSyD4Vc2zzg2rvSJcTS4Yfc4fVNxiLfTNPAU" }   
-     }
+        "googleMaps": {
+          "apiKey": "AIzaSyD4Vc2zzg2rvSJcTS4Yfc4fVNxiLfTNPAU"
+        }
+      }
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     }
