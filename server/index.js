@@ -29,53 +29,59 @@ function getLocation(email){
     });
 }
 function getNearUsers(req, res, next) {
-  const { email } = req.params;
-  console.log(email)
+  const { id } = req.params;
+ 
+  client.geopos('users', id, function(err, result) {
   
-  getLocation(email);
-   
-  console.log('location',app.locals.location);
-   client.georadius(
-    'va-universities',
-    app.locals.location[0][0],
-    app.locals.location[0][1],
-    '100',
-    'mi',
-    'WITHCOORD',
-    'WITHDIST',
-    'ASC',
-    function(err, results) {
-      if (err) {
-        next(err);
-      } else {
-        results = results.map(function(aResult) {
-          resultObject = {
-            key: aResult[0],
-            distance: aResult[1],
-            longitude: aResult[2][0],
-            latitude: aResult[2][1],
-          };
-          return resultObject;
-        });
+    app.locals.location = result;
+    client.georadius(
+      'users',
+      app.locals.location[0][0],
+      app.locals.location[0][1],
+      '100',
+      'mi',
+      'WITHCOORD',
+      'WITHDIST',
+      'ASC',
+      function(err, results) {
+        if (err) {
+        
+  
+          next(err);
+          
+        } else {
+          results = results.map(function(aResult) {
+            resultObject = {
+              key: aResult[0],
+              distance: aResult[1],
+              longitude: aResult[2][0],
+              latitude: aResult[2][1],
+            };
+            return resultObject;
+          });
 
         res.send(results);
       }
     }
   );
+});
 }
 function addUser(req, res, next){
-    const {longitude, latitude} = req.params;
+    const {longitude, latitude, member} = req.params;
     
     client.geoadd(
       'users',
       longitude,
-      latitude, function(req,result){
+      latitude,
+      member, function(requ,result){
         console.log("user successfully added");
+        
         res
         .status(204)
         .json({success:'User added '});
       }
     )
+    
 }
 
 function CalculateState(req, res) {
@@ -104,8 +110,8 @@ function CalculateState(req, res) {
   
 }
 
-app.get('/users/:email', getNearUsers);
-app.put('/user/:longtitude/:latitude', addUser);
+app.get('/users/:id', getNearUsers);
+app.put('/user/:longitude/:latitude/:member', addUser);
 app.post('/answers/',(req,res) => {
   console.log(CalculateState(req,res));
   var body = req.body;

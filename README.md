@@ -21,6 +21,6 @@ yarn start
 then run 
 ```
 cd server
-node server.js
+node index.js
 ```
 scan the Qr code displayed in the terminal and voilà.
