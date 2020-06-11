@@ -22,12 +22,8 @@ app.use(express.static(__dirname + '/public'));
 app.use(parser.json());
 
 
-function getLocation(email){
-  client.geopos('va-universities', email, function(err, result) {
-    app.locals.location = result;
-    
-    });
-}
+
+
 function getNearUsers(req, res, next) {
   const { id } = req.params;
  
@@ -110,13 +106,26 @@ function CalculateState(req, res) {
   
 }
 
+function RegisterThreat(userId, threat){
+  client.hmset('UserThreat', {userId : threat}, (err, reply) => {
+    if(err) {
+      console.error(err);
+    } else {
+      console.log(reply);
+    }
+  });
+
+}
+
 app.get('/users/:id', getNearUsers);
 app.put('/user/:longitude/:latitude/:member', addUser);
 app.post('/answers/',(req,res) => {
   console.log(CalculateState(req,res));
+  RegisterThreat('wwcqd5412','High');
   var body = req.body;
+  var body2 = res.body;
+  var par = res.params;
   res.send(body);
-  console.log("body",body)
 })
 
 
