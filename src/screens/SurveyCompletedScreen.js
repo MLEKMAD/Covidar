@@ -62,7 +62,13 @@ export default class SurveyCompletedScreen extends Component {
     myApi
       .post('/answers', JSON.stringify(postedAnswers))
       .catch(err => console.log(err));
+      console.log("pos",JSON.stringify(postedAnswers));
   };
+
+ 
+  
+
+
 
   componentDidMount() {
     this.retrieveItem('userId');
