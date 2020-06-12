@@ -17,11 +17,13 @@ client.on('error', function (err) {
   console.log('Something went wrong ' + err);
 });
 
-app.use(express.static(__dirname + '/public'));
-
-app.use(parser.json());
 
 
+// parse application/x-www-form-urlencoded
+app.use(parser.urlencoded({ extended: true }))
+
+// parse application/json
+app.use(parser.json())
 
 
 function getNearUsers(req, res, next) {
@@ -120,12 +122,13 @@ function RegisterThreat(userId, threat){
 app.get('/users/:id', getNearUsers);
 app.put('/user/:longitude/:latitude/:member', addUser);
 app.post('/answers/',(req,res) => {
-  console.log(CalculateState(req,res));
-  RegisterThreat('wwcqd5412','High');
-  var body = req.body;
-  var body2 = res.body;
-  var par = res.params;
-  res.send(body);
+  console.log("answers",JSON.parse((Object.getOwnPropertyNames(req.body))[0]))
+  // console.log(CalculateState(req,res));
+  // RegisterThreat('wwcqd5412','High');
+  // var body = req.body;
+  // var body2 = res.body;
+  // var par = res.params;
+  // res.send(body);
 })
 
 
@@ -133,3 +136,6 @@ app.post('/answers/',(req,res) => {
 app.listen(5000, () => {
   console.log(`App listening on port ${PORT}`);
 });
+
+
+
