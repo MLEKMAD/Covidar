@@ -12,9 +12,9 @@ const stringifyObject = require('stringify-object');
 const GREEN = 'rgba(141,196,63,1)';
 const PURPLE = 'rgba(108,48,237,1)';
 const defaultAnswers = {
-  favoriteColor: 'nothing',
-  favoriteNumber: '0',
-  favoritePet: 'nothing',
+  smth: 'nothing',
+  smtth: '0',
+  
 };
 const API_ROOT = 'http://127.0.0.1:5000/';
 export default class SurveyCompletedScreen extends Component {

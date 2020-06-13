@@ -17,8 +17,6 @@ client.on('error', function (err) {
   console.log('Something went wrong ' + err);
 });
 
-
-
 // parse application/x-www-form-urlencoded
 app.use(parser.urlencoded({ extended: true }))
 
@@ -110,7 +108,7 @@ function CalculateState(req, res) {
 }
 
 function RegisterThreat(userId, threat){
-  client.hmset(userId, ["threat",threat], (err, reply) => {
+  client.hmset("threat", [userId,threat], (err, reply) => {
     if(err) {
       console.error(err);
     } else {
@@ -119,15 +117,46 @@ function RegisterThreat(userId, threat){
   });
 
 }
+//this function add patients that zere too close to the user
 function addPotentialPatients(req, res, next){
   let {id} = req.params;
   let potentialPatients = req.body //to verify
   potentialPatients.map(item => {
     client.sadd(id,item.key,(request,reply)=>{
-      client.expire()
+      client.expire(id,1209600,(err,reply) => {
+        if(err) {
+          console.error(err);
+        } else {
+          console.log("reply",reply);
+        }
+      })
     })
   })
 }
+//this function get the user whose state is high and it sends the keys of 
+function getPotentialPatients(req, res, next){
+  client.keys("*",(err,reply)=>{//get all the keys
+    reply.map(item=>{
+      client.hget('threat',item,(err2,reply3)=>{//get the state 
+        if(err){
+          console.log("error")
+        }else{
+          if(reply3.localeCompare("High")==0){//if it's high get all the patients that the user contacted 
+                client.smembers(item,(er,rep)=>{
+                  if(er){
+                    console.log(er);
+                  }else{
+                    res.send(rep);//send the keys of the patiens
+                  }
+                })
+          }
+        }
+      })
+    })
+  })
+}
+
+
 app.get('/users/:id', getNearUsers);
 app.put('/user/:longitude/:latitude/:member', addUser);
 app.post('/answers/',(req,res) => {
@@ -145,6 +174,7 @@ app.get('/users/:id/state', (req,res) => {
       });
     });
 app.post('`/potential/:id',addPotentialPatients);
+app.get('/notification/',getPotentialPatients);
 
 
 
