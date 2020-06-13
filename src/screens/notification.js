@@ -12,7 +12,7 @@ import Background from '../components/Background';
 import ApiService from '../utils/Api';
 const API_ROOT = 'http://127.0.0.1:5000/';
 
-export default class notification extends Component {
+export default class Notification extends Component {
   constructor(props) {
     super(props);
     this.state = {
