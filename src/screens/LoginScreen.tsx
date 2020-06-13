@@ -108,7 +108,7 @@ const saveUser = async (userId,name) => {
 
       <Logo />
 
-      <Header>Welcome.</Header>
+      <Header>Sign in</Header>
 
      
         <View style = {styles.row}>
@@ -116,6 +116,9 @@ const saveUser = async (userId,name) => {
         <Button mode="contained" onPress={signInWithGoogleAsync}>
         Sign In with Google
       </Button>
+      </View>
+      <View style = {styles.row}>
+
       <Button mode="contained" onPress={handleFacebookLogin}>
         Sign In with Facebook
       </Button>

@@ -14,13 +14,13 @@ const Dashboard = ({ navigation }: Props) => (
   <Background>
     <Logo />
     <Header>Covidar</Header>
-    <Button mode="outlined" onPress={() => navigation.navigate('SurveyScreen')}>
+    <Button mode="contained" onPress={() => navigation.navigate('SurveyScreen')}>
       Take Infection test
     </Button>
-    <Button mode="outlined" onPress={() => navigation.navigate('MapScreen')}>
+    <Button mode="contained" onPress={() => navigation.navigate('MapScreen')}>
       Check infection map
     </Button>
-    <Button mode="outlined" onPress={() => navigation.navigate('Statistics')}>
+    <Button mode="contained" onPress={() => navigation.navigate('Statistics')}>
       Statistics
     </Button>
   </Background>

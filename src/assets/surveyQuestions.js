@@ -1,7 +1,7 @@
 const Survey = [
     {
         questionType: 'Info',
-        questionText: 'Welcome to the COVID-19 Symptoms test, Tap next to continue'
+        questionText: 'Welcome to the COVID-19 Symptoms test, are you exhibiting the following symptoms ?'
     },
    
     {
