@@ -36,8 +36,8 @@ function getNearUsers(req, res, next) {
       'users',
       app.locals.location[0][0],
       app.locals.location[0][1],
-      '100',
-      'mi',
+      '4000',
+      'm',
       'WITHCOORD',
       'WITHDIST',
       'ASC',
@@ -83,16 +83,17 @@ function addUser(req, res, next){
 }
 
 function CalculateState(req, res) {
-  const { Answers } = req.body;
+  const  Answers  = req.answers;
   var cofficients ={
     "Sore Throat" : 7,
     "Stuffy Nose" : 2
   };
   
-  console.log(Answers);
+  console.log("zjz",Answers);
+  // console.log("keys",Object.getOwnPropertyNames(Answers));
   var score = 0;
   for (var key in Answers){
-    score = score + cofficients[key] * Answers[key].value;
+    score = score + Answers[key].value;
   }
     console.log(score);
     if (score>5){
@@ -104,32 +105,46 @@ function CalculateState(req, res) {
     else {
       threat = "Low";
     }
-  return(threat);
+  app.locals.threat = threat;
   
 }
 
 function RegisterThreat(userId, threat){
-  client.hmset('UserThreat', {userId : threat}, (err, reply) => {
+  client.hmset(userId, ["threat",threat], (err, reply) => {
     if(err) {
       console.error(err);
     } else {
-      console.log(reply);
+      console.log("reply",reply);
     }
   });
 
 }
-
+function addPotentialPatients(req, res, next){
+  let {id} = req.params;
+  let potentialPatients = req.body //to verify
+  potentialPatients.map(item => {
+    client.sadd(id,item.key,(request,reply)=>{
+      client.expire()
+    })
+  })
+}
 app.get('/users/:id', getNearUsers);
 app.put('/user/:longitude/:latitude/:member', addUser);
 app.post('/answers/',(req,res) => {
-  console.log("answers",JSON.parse((Object.getOwnPropertyNames(req.body))[0]))
-  // console.log(CalculateState(req,res));
-  // RegisterThreat('wwcqd5412','High');
-  // var body = req.body;
-  // var body2 = res.body;
-  // var par = res.params;
-  // res.send(body);
+  req = JSON.parse((Object.getOwnPropertyNames(req.body))[0])
+  console.log(req)
+  CalculateState(req,res);
+  RegisterThreat(req.userId,app.locals.threat);
+  
 })
+app.get('/users/:id/state', (req,res) => {
+      let {id}= req.params;
+      console.log("im",id)
+      client.hget(id, "threat",(req,reply) => {
+        res.send(reply)
+      });
+    });
+app.post('`/potential/:id',addPotentialPatients);
 
 
 

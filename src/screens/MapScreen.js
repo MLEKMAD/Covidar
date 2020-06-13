@@ -30,6 +30,7 @@ export default class MapScreen extends React.Component {
       ErrorMsg: '',
       userId: '',
       userName: '',
+      potentialPatients:[]
     };
   }
 
@@ -84,6 +85,8 @@ export default class MapScreen extends React.Component {
     this.setState({ region });
   };
 
+
+
   mapMarkers = () => {
     return this.state.markers.map(marker => (
       <Marker
@@ -97,6 +100,17 @@ export default class MapScreen extends React.Component {
       ></Marker>
     ));
   };
+
+getPotentialPatients = (markers) => {
+  potentialPatients = [];
+  let userId = this.state.userId;
+  const myApi = new ApiService(API_ROOT);
+  markers.map(item => {
+    parseInt(item.distance)<2 ? potentialPatients.push(item):null;
+  })
+  this.setState({potentialPatients});
+  myApi.post(`/potential/${userId}`,potentialPatients)
+};
 
   componentWillMount() {
     // this.getLocation;
