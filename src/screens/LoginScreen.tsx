@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import { AsyncStorage,TouchableOpacity, StyleSheet, Text, View, Alert } from 'react-native';
+import { AsyncStorage,TouchableOpacity, StyleSheet, Text, View, Alert,Image } from 'react-native';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
 import Header from '../components/Header';
@@ -106,14 +106,14 @@ const saveUser = async (userId,name) => {
     <Background>
       <BackButton goBack={() => navigation.navigate('HomeScreen')} />
 
-      <Logo />
-
-      <Header>Sign in</Header>
+     
 
      
-        <View style = {styles.row}>
+        <View style = {styles.MainContainer}>
+        <Logo />
 
-        <Button mode="contained" onPress={signInWithGoogleAsync}>
+<Header>Sign in</Header>
+        {/* <Button mode="contained" onPress={signInWithGoogleAsync}>
         Sign In with Google
       </Button>
       </View>
@@ -121,8 +121,39 @@ const saveUser = async (userId,name) => {
 
       <Button mode="contained" onPress={handleFacebookLogin}>
         Sign In with Facebook
-      </Button>
+      </Button> */}
+
+      <TouchableOpacity onPress={handleFacebookLogin} style={styles.FacebookStyle} activeOpacity={0.5}>
+          {/*We can use any component which is used to shows something inside TouchableOpacity.
+        It shows the item inside in horizontal orientation */}
+          <Image
+            //We are showing the Image from online
+            source={{
+              uri:
+                'https://raw.githubusercontent.com/AboutReact/sampleresource/master/facebook.png',
+            }}
+            
+            style={styles.ImageIconStyle}
+          />
+          <View style={styles.SeparatorLine} />
+          <Text style={styles.TextStyle}> Sign In Using Facebook </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={signInWithGoogleAsync} style={styles.GooglePlusStyle} activeOpacity={0.5}>
+          <Image
+            //We are showing the Image from online
+            source={{
+              uri:
+                'https://raw.githubusercontent.com/AboutReact/sampleresource/master/google-plus.png',
+            }}
+            
+            style={styles.ImageIconStyle}
+          />
+          <View style={styles.SeparatorLine} />
+          <Text style={styles.TextStyle}> Sign In Using Google  </Text>
+        </TouchableOpacity>
       </View>
+
     </Background>
   );
 };
@@ -143,6 +174,56 @@ const styles = StyleSheet.create({
   link: {
     fontWeight: 'bold',
     color: theme.colors.primary,
+  },
+  MainContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 10,
+  },
+
+  GooglePlusStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#dc4e41',
+    borderWidth: 0.5,
+    borderColor: '#fff',
+    height: 40,
+    width: 220,
+    borderRadius: 5,
+    margin: 5,
+  },
+
+  FacebookStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#485a96',
+    borderWidth: 0.5,
+    borderColor: '#fff',
+    height: 40,
+    width: 220,
+    borderRadius: 5,
+    margin: 5,
+  },
+
+  ImageIconStyle: {
+    padding: 10,
+    margin: 5,
+    height: 25,
+    width: 25,
+    resizeMode: 'stretch',
+  },
+
+  TextStyle: {
+    color: '#fff',
+    marginBottom: 4,
+    marginRight: 20,
+  },
+
+  SeparatorLine: {
+    backgroundColor: '#fff',
+    width: 1,
+    height: 40,
   },
 });
 

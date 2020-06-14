@@ -170,6 +170,7 @@ app.get('/users/:id/state', (req,res) => {
       let {id}= req.params;
       console.log("im",id)
       client.hget(id, "threat",(req,reply) => {
+        console.log('u r ',reply)
         res.send(reply)
       });
     });

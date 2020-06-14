@@ -7,6 +7,7 @@ import {
   View,
   Dimensions,
   TouchableOpacity,
+  Button
 } from 'react-native';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
@@ -140,16 +141,24 @@ getPotentialPatients = (markers) => {
             description={name}
           />
           {isLoading ? this.mapMarkers() : null}
+          
         </MapView>
+        <View
+        style={{
+            position: 'absolute',//use absolute position to show button on top of the map
+            top: '50%', //for center align
+            alignSelf: 'flex-end' //for align to right
+        }}
+    >
+    <Button onPress={this.getCurrentLocation} title={"current location"} dark rounded></Button>
+    <Button onPress={this.loadMarkers} title={"near users"} dark rounded></Button>
 
-        <TouchableOpacity onPress={this.getCurrentLocation}>
-          <Text style={styles.link}>Current Location</Text>
-        </TouchableOpacity>
+    </View>
 
-        <TouchableOpacity onPress={this.loadMarkers}>
-          <Text style={styles.link}>people arround me</Text>
-        </TouchableOpacity>
-      </View>
+        
+
+        </View>
+      
     );
   }
 }
@@ -162,6 +171,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   mapStyle: {
+    flex:1,
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   },
