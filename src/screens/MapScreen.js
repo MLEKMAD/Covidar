@@ -7,12 +7,13 @@ import {
   View,
   Dimensions,
   TouchableOpacity,
-  Button
+  Image,
 } from 'react-native';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import mapStyle from '../assets/mapStyle.json';
 import ApiService from '../utils/Api';
+import { location } from '../assets/location.png';
 const API_ROOT = 'http://127.0.0.1:5000/';
 
 export default class MapScreen extends React.Component {
@@ -31,7 +32,7 @@ export default class MapScreen extends React.Component {
       ErrorMsg: '',
       userId: '',
       userName: '',
-      potentialPatients:[]
+      potentialPatients: [],
     };
   }
 
@@ -61,7 +62,7 @@ export default class MapScreen extends React.Component {
     (async () => {
       let api = new ApiService(API_ROOT);
       let userId = this.state.userId;
-      console.log("33",userId);
+      console.log('33', userId);
       let { status } = await Permissions.askAsync(Permissions.LOCATION);
       if (status !== 'granted') {
         this.setState({ ErrorMsg: 'Permission to access location was denied' });
@@ -86,8 +87,6 @@ export default class MapScreen extends React.Component {
     this.setState({ region });
   };
 
-
-
   mapMarkers = () => {
     return this.state.markers.map(marker => (
       <Marker
@@ -102,16 +101,16 @@ export default class MapScreen extends React.Component {
     ));
   };
 
-getPotentialPatients = (markers) => {
-  potentialPatients = [];
-  let userId = this.state.userId;
-  const myApi = new ApiService(API_ROOT);
-  markers.map(item => {
-    parseInt(item.distance)<2 ? potentialPatients.push(item):null;
-  })
-  this.setState({potentialPatients});
-  myApi.post(`/potential/${userId}`,potentialPatients)
-};
+  getPotentialPatients = markers => {
+    potentialPatients = [];
+    let userId = this.state.userId;
+    const myApi = new ApiService(API_ROOT);
+    markers.map(item => {
+      parseInt(item.distance) < 2 ? potentialPatients.push(item) : null;
+    });
+    this.setState({ potentialPatients });
+    myApi.post(`/potential/${userId}`, potentialPatients);
+  };
 
   componentWillMount() {
     // this.getLocation;
@@ -134,6 +133,7 @@ getPotentialPatients = (markers) => {
           customMapStyle={mapStyle}
           region={this.state.region}
           showsUserLocation={true}
+          showsMyLocationButton={true}
         >
           <Marker
             coordinate={this.state.region}
@@ -141,24 +141,31 @@ getPotentialPatients = (markers) => {
             description={name}
           />
           {isLoading ? this.mapMarkers() : null}
-          
         </MapView>
         <View
-        style={{
-            position: 'absolute',//use absolute position to show button on top of the map
+          style={{
+            position: 'absolute', //use absolute position to show button on top of the map
             top: '50%', //for center align
-            alignSelf: 'flex-end' //for align to right
-        }}
-    >
-    <Button onPress={this.getCurrentLocation} title={"current location"} dark rounded></Button>
-    <Button onPress={this.loadMarkers} title={"near users"} dark rounded></Button>
-
-    </View>
-
-        
-
+            alignSelf: 'flex-end', //for align to right
+          }}
+        >
+          <TouchableOpacity
+            onPress={this.getCurrentLocation}
+            activeOpacity={0.5}
+          >
+            <Image
+              source={require('../assets/current.png')}
+              style={styles.ImageIconStyle}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.loadMarkers} activeOpacity={0.5}>
+            <Image
+              source={require('../assets/peop.png')}
+              style={styles.ImageIconStyle}
+            />
+          </TouchableOpacity>
         </View>
-      
+      </View>
     );
   }
 }
@@ -171,8 +178,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   mapStyle: {
-    flex:1,
+    flex: 1,
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
+  },
+  ImageIconStyle: {
+    padding: 10,
+    margin: 5,
+    height: 35,
+    width: 35,
+    resizeMode: 'stretch',
   },
 });
