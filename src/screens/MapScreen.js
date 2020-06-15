@@ -33,6 +33,7 @@ export default class MapScreen extends React.Component {
       userId: '',
       userName: '',
       potentialPatients: [],
+      isInDanger:false
       
     };
   }
@@ -47,6 +48,23 @@ export default class MapScreen extends React.Component {
     }
     
   
+showNotification = ()=>{
+  return(
+     alert("You should get tested, you were close to an infected person")
+  )
+}
+
+    isInDanger=  (userId) => {
+      const myApi = new ApiService(API_ROOT);
+      myApi.get('/notificaion/').then(response => {
+        console.log(response);
+        response.map(item => {
+          if (item == userId) {
+            this.setState({ isInDanger: true });
+          }
+        });
+      });
+    };
 
   async retrieveItem(key) {
     console.log('entered');
@@ -90,7 +108,7 @@ export default class MapScreen extends React.Component {
     this.setState({ region });
   };
 
-  mapMarkers = () => {
+  loadStates = ()=>{
     const myApi = new ApiService(API_ROOT);
       this.state.markers.map((marker)=>{
           myApi.get(`/users/${marker.key}/state`).then((state)=>{  
@@ -99,8 +117,12 @@ export default class MapScreen extends React.Component {
           }).catch((err)=>console.log(err))
          
         })
-    
-console.log("fghj",this.state.markers)
+        console.log("maaa",this.state.markers)
+  }
+
+  mapMarkers = () => {
+      let pincolor = ["#FFFF00","#008000","#FF0000"]
+
     return this.state.markers.map((marker,index) => (
       
       <Marker
@@ -111,21 +133,24 @@ console.log("fghj",this.state.markers)
         }}
         title={`user${index}`}
         description= {`${marker.state}`}
-     />
+        pinColor={`${pincolor[parseInt(3*Math.random())]}`}
+     ></Marker>
       
       
     ));
   };
 
-  getPotentialPatients = markers => {
+  getPotentialPatients = () => {
+    console.log("aa hna")
     potentialPatients = [];
     let userId = this.state.userId;
     const myApi = new ApiService(API_ROOT);
-    markers.map(item => {
-      parseInt(item.distance) < 2 ? potentialPatients.push(item) : null;
+    this.state.markers.map(item => {
+      parseFloat(item.distance) < 400 ? potentialPatients.push(item) : null;
     });
+    console.log("ana",potentialPatients);
     this.setState({ potentialPatients });
-    myApi.post(`/potential/${userId}`, potentialPatients);
+    myApi.post(`/potential/${userId}`, potentialPatients).catch(err => console.log(err));
   };
 
   componentWillMount() {
@@ -134,12 +159,13 @@ console.log("fghj",this.state.markers)
     this.retrieveItem('userId');
     this.retrieveItem('name');
   }
+  
 
   render() {
     let userId = this.state.userId;
     let userName = this.state.userName;
     let isLoading = this.state.isLoading;
-
+    let isInDanger = this.state.isInDanger;
     let id = String(userId);
     let name = String(userName);
     return (
@@ -175,11 +201,26 @@ console.log("fghj",this.state.markers)
               style={styles.ImageIconStyle}
             />
           </TouchableOpacity>
+          <TouchableOpacity onPress={this.isInDanger} activeOpacity={0.5}>
+            <Image
+              source={require('../assets/pngwave.png')}
+              style={styles.ImageIconStyle}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.getPotentialPatients} activeOpacity={0.5}>
+            <Image
+              source={require('../assets/pngwave.png')}
+              style={styles.ImageIconStyle}
+            />
+          </TouchableOpacity>
+          
         </View>
+        {isInDanger? this.showNotification():null}
       </View>
     );
   }
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -201,3 +242,9 @@ const styles = StyleSheet.create({
     resizeMode: 'stretch',
   },
 });
+
+
+
+
+
+

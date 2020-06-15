@@ -23,6 +23,7 @@ const Dashboard = ({ navigation }: Props) => (
     <Button mode="contained" onPress={() => navigation.navigate('Statistics')}>
       Statistics
     </Button>
+    
   </Background>
 );
 

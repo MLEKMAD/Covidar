@@ -52,7 +52,13 @@ function getNearUsers(req, res, next) {
               distance: aResult[1],
               longitude: aResult[2][0],
               latitude: aResult[2][1],
+              state:["Low","Medium","High"][parseInt(3*Math.random())],//the state
             };
+            client.hget("threat", resultObject.key,(req,reply) => {
+              console.log('u r ',reply)
+              resultObject.state = reply
+            });
+            console.log("erty",resultObject)
             return resultObject;
           });
 

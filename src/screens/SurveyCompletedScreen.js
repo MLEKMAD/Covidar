@@ -63,6 +63,8 @@ export default class SurveyCompletedScreen extends Component {
       .post('/answers', JSON.stringify(postedAnswers))
       .catch(err => console.log(err));
       console.log("pos",JSON.stringify(postedAnswers));
+
+     
   };
 
  
@@ -85,14 +87,11 @@ export default class SurveyCompletedScreen extends Component {
       <View style={styles.background}>
         <View style={styles.container}>
           <ScrollView>
-            <Text style={styles.questionText}>The results are in!</Text>
-            <Text>
-              Raw JSON:{' '}
-              {JSON.stringify(
-                this.props.navigation.getParam('surveyAnswers', {})
-              )}
+            <Text style={styles.questionText}>
+             Thank you for filling the survey, please Submit!
             </Text>
             <Button
+            type="raised"
               onPress={() => {
                 this.putAnswers(userId, answers);
               }}
@@ -113,8 +112,8 @@ const styles = StyleSheet.create({
     backgroundColor: PURPLE,
   },
   container: {
-    minWidth: '70%',
-    maxWidth: '90%',
+    minWidth: '40%',
+    maxWidth: '40%',
     alignItems: 'stretch',
     justifyContent: 'center',
     backgroundColor: 'white',
