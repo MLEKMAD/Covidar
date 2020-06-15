@@ -33,17 +33,20 @@ export default class MapScreen extends React.Component {
       userId: '',
       userName: '',
       potentialPatients: [],
+      
     };
   }
 
   loadMarkers = async () => {
     console.log('here');
     const myApi = new ApiService(API_ROOT);
-    console.log('1', this.state.userId);
-    let markers = await myApi.get(`/users/${this.state.userId}`);
-    this.setState({ markers, isLoading: true });
-    console.log('markers', markers);
-  };
+   let markers = await myApi.get(`/users/${this.state.userId}`)
+  
+      this.setState({ markers,isLoading:true});
+      console.log('markers', markers);
+    }
+    
+  
 
   async retrieveItem(key) {
     console.log('entered');
@@ -88,16 +91,29 @@ export default class MapScreen extends React.Component {
   };
 
   mapMarkers = () => {
-    return this.state.markers.map(marker => (
+    const myApi = new ApiService(API_ROOT);
+      this.state.markers.map((marker)=>{
+          myApi.get(`/users/${marker.key}/state`).then((state)=>{  
+            if(state){marker.state = state;}else{marker.state = 'unkown'};
+            console.log('state',marker.state);
+          }).catch((err)=>console.log(err))
+         
+        })
+    
+console.log("fghj",this.state.markers)
+    return this.state.markers.map((marker,index) => (
+      
       <Marker
         key={marker.key}
         coordinate={{
-          latitude: parseInt(marker.latitude),
-          longitude: parseInt(marker.longitude),
+          latitude: parseFloat(marker.latitude),
+          longitude: parseFloat(marker.longitude),
         }}
-        title="marker"
-        description="markkkkeer"
-      ></Marker>
+        title={`user${index}`}
+        description= {`${marker.state}`}
+     />
+      
+      
     ));
   };
 
@@ -123,7 +139,7 @@ export default class MapScreen extends React.Component {
     let userId = this.state.userId;
     let userName = this.state.userName;
     let isLoading = this.state.isLoading;
-    console.log('id', userId);
+
     let id = String(userId);
     let name = String(userName);
     return (
@@ -135,11 +151,6 @@ export default class MapScreen extends React.Component {
           showsUserLocation={true}
           showsMyLocationButton={true}
         >
-          <Marker
-            coordinate={this.state.region}
-            title="title"
-            description={name}
-          />
           {isLoading ? this.mapMarkers() : null}
         </MapView>
         <View
