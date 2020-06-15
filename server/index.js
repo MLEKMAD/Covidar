@@ -117,7 +117,7 @@ function RegisterThreat(userId, threat){
   });
 
 }
-//this function add patients that zere too close to the user
+//this function add patients that were too close to the user
 function addPotentialPatients(req, res, next){
   let {id} = req.params;
   let potentialPatients = req.body //to verify
@@ -163,13 +163,14 @@ app.post('/answers/',(req,res) => {
   req = JSON.parse((Object.getOwnPropertyNames(req.body))[0])
   console.log(req)
   CalculateState(req,res);
+  console.log("treat",app.locals.threat)
   RegisterThreat(req.userId,app.locals.threat);
   
 })
 app.get('/users/:id/state', (req,res) => {
       let {id}= req.params;
       console.log("im",id)
-      client.hget(id, "threat",(req,reply) => {
+      client.hget("threat", id,(req,reply) => {
         console.log('u r ',reply)
         res.send(reply)
       });
