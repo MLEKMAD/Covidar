@@ -19,50 +19,84 @@ export default class Statistics extends React.Component {
     super(props);
 
     this.state = {
-      data :{   "total_cases":8734,
-   
-      "total_recovered":7725,
-
-      "total_unresolved":0,
-
-      "total_deaths":212},
+      total_cases:0,
+      recovered:0,
+      dead:0
     };
   }
   async componentDidMount() {
     
+      const myApi = new ApiService(API_ROOT);
+      myApi.get(``).then((apiData => 
+        this.setState(
+        {
+           total_cases : apiData["countrydata"][0]
+        ["total_cases"],
+        recovered : apiData["countrydata"][0]
+        ["total_recovered"],
+        dead : apiData["countrydata"][0]
+        ["total_deaths"],
 
-   console.log('cv');
+      }
+      )
+      ));
+      
+     
+    
+
 
   };
 
   
 
   render() {
+    //console.log((this.state.apiData));
+   // let list2 = Array.from(this.state.apiData["countrydata"])
+    const cases = this.state.total_cases;
+    const recovered = this.state.recovered;
+    const deaths =  this.state.dead; 
+    console.log( cases, deaths, recovered);
+
+    // console.log(list2);
+    //console.log(elmnt);
     return <View style={styles.container}>
-       <BarChart
+      
+      <BarChart
     data={{
       labels: ['Infected', 'Recovered', 'Deaths'],
       datasets: [
         {
           label: 'People',
           backgroundColor: ['rgba(0, 0, 255, 0.5)', 'rgba(0, 255, 0, 0.5)', 'rgba(255, 0, 0, 0.5)'],
-          data: [8734, 7725, 212],
+          data: [cases, recovered,deaths],
         },
       ],
     }}
-    width={Dimensions.get('window').width} // from react-native
-    height={Dimensions.get('window').height}
+    width={Dimensions.get("window").width} // from react-native
+    height={220}
+    yAxisInterval={1} // optional, defaults to 1
     chartConfig={{
-      backgroundGradientFrom: "#1E2923",
-      backgroundGradientFromOpacity: 0,
-      backgroundGradientTo: "#08130D",
-      backgroundGradientToOpacity: 0.5,
-      color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-      strokeWidth: 2, // optional, default 3
-      barPercentage: 0.5,
+      backgroundColor: "#e26a00",
+      backgroundGradientFrom: "#fb8c00",
+      backgroundGradientTo: "#ffa726",
+      decimalPlaces: 2, // optional, defaults to 2dp
+      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+      labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+      style: {
+        borderRadius: 16
+      },
+      propsForDots: {
+        r: "6",
+        strokeWidth: "2",
+        stroke: "#ffa726"
+      }
+    }}
+    bezier
+    style={{
+      marginVertical: 8,
+      borderRadius: 16
     }}
   />
-
     </View>;
   }
 }
